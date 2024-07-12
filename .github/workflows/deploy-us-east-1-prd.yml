@@ -1,0 +1,17 @@
+name: Regiao 1
+on:
+  workflow_call:
+
+
+jobs:
+
+    build: 
+        runs-on: ubuntu-latest
+
+        steps:
+
+            - uses: actions/checkout@v3
+
+            - name: Write somthing to log
+              run: |
+                    echo "Deploy regiao 1"

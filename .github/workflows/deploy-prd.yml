@@ -1,0 +1,12 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+    us-east-1:
+        uses: ./.github/workflows/deploy-us-east-1-prd.yml
+    
+    us-east-2:
+        uses: ./.github/workflows/deploy-us-east-2-prd.yml
