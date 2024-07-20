@@ -1,17 +1,60 @@
-name: Regiao 2
+name: Regiao 1
 on:
   workflow_call:
+    inputs:
+      region:
+        type: string
+        description: 'Região'
+        required: true
 
 
 jobs:
+  
+  show_region:
+    runs-on: small-runner
+    steps:
+      - name: Write somthing to log
+        run: |
+            echo "Iniciando a action de deploy na região de ${{inputs.region}}"
 
-    build: 
-        runs-on: ubuntu-latest
+  build: 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Write somthing to log
+        run: |
+              echo "Deploy regiao 1"
 
-        steps:
+  product_approve:
+    needs: [build]
+    runs-on: small-runner
+    environment: product_approve
+    steps:
+      - name: Write somthing to log
+        run: |
+              echo "Deploy regiao 2"
 
-            - uses: actions/checkout@v3
+  tech_approve:
+    needs: [build]
+    runs-on: small-runner
+    environment: tech_approve
+    steps:
+      - name: Write somthing to log
+        run: |
+              echo "Deploy regiao 2"
 
-            - name: Write somthing to log
-              run: |
-                    echo "Deploy regiao 2"
+  start_job:
+    needs: [product_approve, tech_approve]
+    runs-on: small-runner
+    steps:      
+      - name: Exibir quem iniciou o job
+        run: |
+          echo "Este job foi iniciado por: $GITHUB_ACTOR"
+  
+  done:
+    needs: [start_job]
+    runs-on: small-runner
+    steps:
+      - name: finalização
+        run: |
+          echo "finalizado"

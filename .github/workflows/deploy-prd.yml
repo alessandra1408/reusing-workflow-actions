@@ -2,17 +2,15 @@ name: Deploy
 
 on:
   workflow_dispatch:
-    inputs:
-      approval:
-        description: 'Approve the action'
-        required: true
-        default: 'approved'
 
 jobs:
 
     us-east-1:
-        uses: ./.github/workflows/deploy-us-east-1-prd.yml
+      uses: ./.github/workflows/deploy-us-east-1-prd.yml
+      with:
+          region: us-east-1
     
     us-east-2:
         uses: ./.github/workflows/deploy-us-east-2-prd.yml
-        
+        with:
+          region: us-east-2
