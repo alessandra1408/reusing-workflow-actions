@@ -18,7 +18,7 @@ jobs:
           region: us-east-1
     
     us-east-2:
-        if: ${{ success() }}
+        needs: [us-east-1]
         uses: ./.github/workflows/deploy-us-east-2-prd.yml
         with:
           region: us-east-2
