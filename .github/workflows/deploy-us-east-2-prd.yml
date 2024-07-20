@@ -11,7 +11,7 @@ on:
 jobs:
   
   show_region:
-    runs-on: small-runner
+    runs-on: ubuntu-latest
     steps:
       - name: Write somthing to log
         run: |
@@ -27,7 +27,7 @@ jobs:
 
   product_approve:
     needs: [build]
-    runs-on: small-runner
+    runs-on: ubuntu-latest
     environment: product_approve
     steps:
       - name: Write somthing to log
@@ -36,7 +36,7 @@ jobs:
 
   tech_approve:
     needs: [build]
-    runs-on: small-runner
+    runs-on: ubuntu-latest
     environment: tech_approve
     steps:
       - name: Write somthing to log
@@ -45,7 +45,7 @@ jobs:
 
   start_job:
     needs: [product_approve, tech_approve]
-    runs-on: small-runner
+    runs-on: ubuntu-latest
     steps:      
       - name: Exibir quem iniciou o job
         run: |
@@ -53,7 +53,7 @@ jobs:
   
   done:
     needs: [start_job]
-    runs-on: small-runner
+    runs-on: ubuntu-latest
     steps:
       - name: finalização
         run: |
