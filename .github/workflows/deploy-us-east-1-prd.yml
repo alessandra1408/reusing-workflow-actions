@@ -7,7 +7,6 @@ on:
         description: 'Região'
         required: true
 
-
 jobs:
 
   show_region:
@@ -46,7 +45,8 @@ jobs:
   start_job:
     needs: [product_approve, tech_approve]
     runs-on: ubuntu-latest
-    steps:      
+    environment: start_job
+    steps:
       - name: Exibir quem iniciou o job
         run: |
           echo "Este job foi iniciado por: $GITHUB_ACTOR"
