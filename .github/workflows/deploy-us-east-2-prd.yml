@@ -9,7 +9,7 @@ on:
 
 
 jobs:
-  
+
   show_region:
     runs-on: small-runner
     steps:
