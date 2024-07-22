@@ -33,6 +33,7 @@ jobs:
             exit 0
           fi
           echo "No existing image and tag. Proceeding with build..."
+          exit 1
       - uses: actions/checkout@v3
       - name: Write somthing to log
         run: |
@@ -59,12 +60,14 @@ jobs:
           path: image_info.txt
       
       - name: Download artifact
+        if: steps.check.conclusion == 'success'
         uses: actions/download-artifact@v3
         with:
           name: image-info
           path: .
 
       - name: Read variables from file
+        if: steps.check.conclusion == 'success'
         id: read-vars
         run: |
           source image_info.txt
@@ -75,10 +78,11 @@ jobs:
         shell: bash
 
       - name: Use variables
+        if: steps.check.conclusion == 'success'
         run: echo "Using IMAGE=$image and TAG=$tag"
         env:
-          IMAGE: ${{ steps.read-vars.outputs.image }}
-          TAG: ${{ steps.read-vars.outputs.tag }}
+          image: ${{ steps.read-vars.outputs.image }}
+          tag: ${{ steps.read-vars.outputs.tag }}
     
 
   product_approve:
