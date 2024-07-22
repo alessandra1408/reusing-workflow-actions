@@ -7,6 +7,10 @@ on:
         type: string
         description: 'Região'
         required: true
+      enviroment:
+          type: string
+          description: ''
+          required: true
 
 jobs:
   show_region:
@@ -93,7 +97,7 @@ jobs:
   product_approve:
     needs: [build]
     runs-on: ubuntu-latest
-    environment: product_approve
+    environment: product_${{inputs.enviroment}}
     steps:
       - name: Write somthing to log
         run: |
@@ -102,7 +106,7 @@ jobs:
   tech_approve:
     needs: [build]
     runs-on: ubuntu-latest
-    environment: tech_approve
+    environment: tech_${{inputs.enviroment}}
     steps:
       - name: Write somthing to log
         run: |
