@@ -16,9 +16,11 @@ jobs:
       uses: ./.github/workflows/deploy-us-east-2-prd.yml
       with:
           region: us-east-1
+          enviroment: approve
     
     us-east-2:
         needs: [us-east-1]
         uses: ./.github/workflows/deploy-us-east-2-prd.yml
         with:
           region: us-east-2
+          enviroment: approve
