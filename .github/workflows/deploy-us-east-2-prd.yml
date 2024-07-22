@@ -62,6 +62,7 @@ jobs:
         with:
           name: image-info
           path: image_info.txt
+          retention-days: 1  # Mantém o artefato por 1 dia
       
       - name: Download artifact
         if: steps.check_file.outputs.files_exists == 'true'
