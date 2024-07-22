@@ -30,44 +30,45 @@ jobs:
             source image_info.txt
             echo "::set-output name=image::$image"
             echo "::set-output name=tag::$tag"
-            exit 0
+          else
+            echo "No existing image and tag. Proceeding with build..."
+            echo "::set-output name=image::"
+            echo "::set-output name=tag::"
           fi
-          echo "No existing image and tag. Proceeding with build..."
-          exit 1
       - uses: actions/checkout@v3
       - name: Write somthing to log
         run: |
           echo "Deploy regiao 1"
 
       - name: Push image to ECR
-        if: steps.check.conclusion != 'success'
+        if: steps.check.outputs.image == ''
         id: push
         run: |
-          echo "image=hello" >> "$GITHUB_OUTPUT"
-          echo "tag=world" >> "$GITHUB_OUTPUT"
+          echo "::set-output name=image::hello
+          echo "::set-output name=image::world
 
       - name: Save image and tag to artifact
-        if: steps.check.conclusion != 'success'
+        if: steps.check.outputs.image == ''
         run: |
           echo "image=${{ steps.push.outputs.image }}" > image_info.txt
           echo "tag=${{ steps.push.outputs.tag }}" >> image_info.txt
     
       - name: Upload artifact
-        if: steps.check.conclusion != 'success'
+        if: steps.check.outputs.image == ''
         uses: actions/upload-artifact@v3
         with:
           name: image-info
           path: image_info.txt
       
       - name: Download artifact
-        if: steps.check.conclusion == 'success'
+        if: steps.check.outputs.image != ''
         uses: actions/download-artifact@v3
         with:
           name: image-info
           path: .
 
       - name: Read variables from file
-        if: steps.check.conclusion == 'success'
+        if: steps.check.outputs.image != ''
         id: read-vars
         run: |
           source image_info.txt
@@ -78,7 +79,7 @@ jobs:
         shell: bash
 
       - name: Use variables
-        if: steps.check.conclusion == 'success'
+        if: steps.check.outputs.image != ''
         run: echo "Using IMAGE=$image and TAG=$tag"
         env:
           image: ${{ steps.read-vars.outputs.image }}
