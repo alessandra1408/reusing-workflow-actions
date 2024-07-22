@@ -72,8 +72,8 @@ jobs:
         id: read-vars
         run: |
           source image_info.txt
-          echo "IMAGE=$image"
-          echo "TAG=$tag"
+          echo "image=$image"
+          echo "tag=$tag"
           echo "::set-output name=image::$image"
           echo "::set-output name=tag::$tag"
         shell: bash
