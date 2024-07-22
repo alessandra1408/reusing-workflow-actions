@@ -23,52 +23,55 @@ jobs:
       tag: ${{ steps.push.outputs.tag }}
     steps:
       - name: Check for existing image and tag
-        id: check
+        id: check_file
+        uses: andstor/file-existence-action@v1
+        with:
+          files: 'image_info.txt'
+      
+      - name: Files exist
+        if: steps.check_file.outputs.files_exists == 'true'
         run: |
-          if [ -f image_info.txt ]; then
             echo "Image and tag already exist. Reading values..."
             source image_info.txt
             echo "::set-output name=image::$image"
             echo "::set-output name=tag::$tag"
-          else
+        
+      - name: File not exist
+        if: steps.check_file.outputs.files_exists == 'false'
+        run: |
             echo "No existing image and tag. Proceeding with build..."
             echo "::set-output name=image::"
             echo "::set-output name=tag::"
-          fi
-      - uses: actions/checkout@v3
-      - name: Write somthing to log
-        run: |
-          echo "Deploy regiao 1"
 
       - name: Push image to ECR
-        if: steps.check.outputs.image == ''
+        if: steps.check_file.outputs.files_exists == 'false'
         id: push
         run: |
           echo "::set-output name=image::hello
           echo "::set-output name=image::world
 
       - name: Save image and tag to artifact
-        if: steps.check.outputs.image == ''
+        if: steps.check_file.outputs.files_exists == 'false'
         run: |
           echo "image=${{ steps.push.outputs.image }}" > image_info.txt
           echo "tag=${{ steps.push.outputs.tag }}" >> image_info.txt
     
       - name: Upload artifact
-        if: steps.check.outputs.image == ''
+        if: steps.check_file.outputs.files_exists == 'false'
         uses: actions/upload-artifact@v3
         with:
           name: image-info
           path: image_info.txt
       
       - name: Download artifact
-        if: steps.check.outputs.image != ''
+        if: steps.check_file.outputs.files_exists == 'true'
         uses: actions/download-artifact@v3
         with:
           name: image-info
           path: .
 
       - name: Read variables from file
-        if: steps.check.outputs.image != ''
+        if: steps.check_file.outputs.files_exists == 'true'
         id: read-vars
         run: |
           source image_info.txt
@@ -79,7 +82,7 @@ jobs:
         shell: bash
 
       - name: Use variables
-        if: steps.check.outputs.image != ''
+        if: steps.check_file.outputs.files_exists == 'true'
         run: echo "Using IMAGE=$image and TAG=$tag"
         env:
           image: ${{ steps.read-vars.outputs.image }}
