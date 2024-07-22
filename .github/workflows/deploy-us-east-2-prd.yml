@@ -44,7 +44,6 @@ jobs:
         run: |
           echo "image=hello" >> "$GITHUB_OUTPUT"
           echo "tag=world" >> "$GITHUB_OUTPUT"
-      
 
       - name: Save image and tag to artifact
         if: steps.check.conclusion != 'success'
@@ -58,33 +57,34 @@ jobs:
         with:
           name: image-info
           path: image_info.txt
-          
+      
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: image-info
+          path: .
+
+      - name: Read variables from file
+        id: read-vars
+        run: |
+          source image_info.txt
+          echo "IMAGE=$image"
+          echo "TAG=$tag"
+          echo "::set-output name=image::$image"
+          echo "::set-output name=tag::$tag"
+        shell: bash
+
+      - name: Use variables
+        run: echo "Using IMAGE=$image and TAG=$tag"
+        env:
+          IMAGE: ${{ steps.read-vars.outputs.image }}
+          TAG: ${{ steps.read-vars.outputs.tag }}
 
   use-variables:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-    - name: Download artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: image-info
-        path: .
-
-    - name: Read variables from file
-      id: read-vars
-      run: |
-        source image_info.txt
-        echo "IMAGE=$image"
-        echo "TAG=$tag"
-        echo "::set-output name=image::$image"
-        echo "::set-output name=tag::$tag"
-      shell: bash
-
-    - name: Use variables
-      run: echo "Using IMAGE=$image and TAG=$tag"
-      env:
-        IMAGE: ${{ steps.read-vars.outputs.image }}
-        TAG: ${{ steps.read-vars.outputs.tag }}
+    
 
   product_approve:
     needs: [build, use-variables]
